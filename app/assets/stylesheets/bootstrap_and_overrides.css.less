@@ -1,97 +1,210 @@
 @import "twitter/bootstrap/bootstrap";
 
-// Set the correct sprite paths
 @iconSpritePath: image-url("twitter/bootstrap/glyphicons-halflings.png");
 @iconWhiteSpritePath: image-url("twitter/bootstrap/glyphicons-halflings-white.png");
-
-// Set the Font Awesome (Font Awesome is default. You can disable by commenting below lines)
 @fontAwesomeEotPath: asset-url("fontawesome-webfont.eot");
 @fontAwesomeEotPath_iefix: asset-url("fontawesome-webfont.eot?#iefix");
 @fontAwesomeWoffPath: asset-url("fontawesome-webfont.woff");
 @fontAwesomeTtfPath: asset-url("fontawesome-webfont.ttf");
 @fontAwesomeSvgPath: asset-url("fontawesome-webfont.svg#fontawesomeregular");
 
-// Font Awesome
 @import "fontawesome/font-awesome";
 
-// Glyphicons
-//@import "twitter/bootstrap/sprites.less";
+:root {
+  --bg-main: #050608;
+  --bg-panel: #0e1116;
+  --bg-panel-soft: #121722;
+  --text-main: #f4f7fb;
+  --text-muted: #aeb8c7;
+  --accent: #2c6cff;
+  --accent-strong: #5f8cff;
+  --border-main: #25324a;
+}
 
-// Your custom LESS stylesheets goes here
-//
-// Since bootstrap was imported above you have access to its mixins which
-// you may use and inherit here
-//
-// If you'd like to override bootstrap's own variables, you can do so here as well
-// See http://twitter.github.com/bootstrap/customize.html#variables for their names and documentation
-//
-// Example:
-// @linkColor: #ff0000;
 body {
-  background-color: #eee;
+  background:
+    radial-gradient(circle at top right, rgba(44, 108, 255, 0.14), transparent 42%),
+    radial-gradient(circle at 10% 20%, rgba(95, 140, 255, 0.09), transparent 38%),
+    var(--bg-main);
+  color: var(--text-main);
+}
+
+a { color: #d6e7ff; }
+a:hover, a:focus { color: #ffffff; }
+
+.navbar-default {
+  background: linear-gradient(120deg, #0b0d11, #050608);
+  border-color: var(--border-main);
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a {
+  color: #f9fbff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-brand:hover {
+  color: #9cb7ff;
 }
 
 div.box-rounded {
-  background-color: #fff;
+  background-color: rgba(12, 16, 24, 0.96);
+  border: 1px solid var(--border-main);
   padding: 15px;
   margin-bottom: 40px;
-  -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-          border-radius: 5px;
-  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25);
-     -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25);
-          box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 
-div.box-rounded-empty {
-  padding: 15px;
-  margin-bottom: 40px;
-}
+div.box-rounded-empty { padding: 15px; margin-bottom: 40px; }
 
-.post p, div.box-rounded-empty p {
-  font-size: 15px;
-}
+.post p, div.box-rounded-empty p { font-size: 15px; }
+.center { text-align: center; }
+.right { text-align: right; }
+hr { margin-top: 15px; margin-bottom: 8px; }
 
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-hr {
-  margin-top: 15px;
-  margin-bottom: 8px;
-}
-
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover {
-  background-color: #eee;
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover {
+  background-color: rgba(12, 16, 24, 0.96);
   font-weight: bold;
   border-bottom-color: transparent;
 }
 
-.form-group label {
-  text-align: left;
+.guess-stage-tabs > li.disabled > a,
+.guess-stage-tabs > li.disabled > a:hover,
+.guess-stage-tabs > li.disabled > a:focus {
+  color: #7e8796;
+  cursor: not-allowed;
+  background-color: #10141b;
+  border-color: #2a3547;
 }
 
-.start-page {
-  max-width: 800px;
-}
-
-.bs-callout{margin:20px 0;padding:20px;border-left:3px solid #eee}.bs-callout h4{margin-top:0;margin-bottom:5px}.bs-callout p:last-child{margin-bottom:0}.bs-callout code{background-color:#fff;border-radius:3px}.bs-callout-danger{background-color:#fdf7f7;border-color:#d9534f}.bs-callout-danger h4{color:#d9534f}.bs-callout-warning{background-color:#fcf8f2;border-color:#f0ad4e}.bs-callout-warning h4{color:#f0ad4e}.bs-callout-info{background-color:#f4f8fa;border-color:#5bc0de}.bs-callout-info h4{color:#5bc0de}
-.bs-callout-danger {
-  
-}
-
-@media (max-width: 768px) {
-  .small-flag {
-    width: 30px;
-  }
-}
+.guess-stage-tabs > li.disabled { opacity: 0.58; }
+.guess-stage-tabs { margin-bottom: 12px; }
+#knockout-missing-advance-alert { margin-top: 12px; }
 
 .progress {
+  background-color: #0c1117;
+  border: 1px solid #2a3547;
+  overflow: hidden;
   position: relative;
+}
+
+.progress-bar-success { background-color: #2c6cff; color: #fff; }
+.progress-bar-warning { background-color: #ffffff; color: #000; }
+.progress-bar-danger { background-color: #1a1f29; color: #fff; }
+
+.legend-pill {
+  display: inline-block;
+  min-width: 42px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 6px;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.legend-draw {
+  background-color: #ffffff;
+  color: #000;
+  border: 1px solid #c7d4ee;
+}
+
+.match-team-name {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 0.88em;
+}
+
+.form-group label { text-align: left; }
+
+.table {
+  background-color: rgba(12, 16, 24, 0.96);
+  border: 1px solid var(--border-main);
+  color: var(--text-main);
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > td { border-top-color: rgba(255,255,255,0.14); }
+.table > thead > tr > th { border-bottom-color: rgba(255,255,255,0.18); }
+.text-muted { color: var(--text-muted); }
+
+.form-control {
+  background-color: #f7f9fc;
+  color: #0b1a3a;
+  border: 1px solid #a8bbdb;
+}
+
+.form-control:focus {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 2px rgba(127, 184, 255, 0.24);
+}
+
+input.form-control.js-goals-a,
+input.form-control.js-goals-b,
+input.form-control[name='guesses[][goals_a]'],
+input.form-control[name='guesses[][goals_b]'] {
+  min-width: 56px;
+  width: 56px;
+  text-align: center;
+  padding: 6px 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-primary,
+.btn-success {
+  background: linear-gradient(120deg, #2c6cff, #1f56b3);
+  border-color: #173d86;
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-primary:focus,
+.btn-success:focus {
+  background: linear-gradient(120deg, #3d82ff, #1a63e8);
+  border-color: #1f56b3;
+}
+
+img.tooltip-img,
+img.small-flag {
+  border-radius: 8px !important;
+  border: 1px solid #3b465a;
+  background-color: #fff;
+  object-fit: cover;
+}
+
+.small-flag {
+  width: 22px;
+  height: 22px;
+}
+
+.label-success { background-color: #2a6fff; }
+.label-danger { background-color: #0b4fc4; }
+
+.legend-home,
+.legend-away {
+  color: #fff;
+}
+
+.match-team-name,
+.box-rounded.center h1 .match-team-name {
+  max-width: 110px;
+}
+
+.start-page { max-width: 800px; }
+
+.bs-callout{margin:20px 0;padding:20px;border-left:3px solid #eee}.bs-callout h4{margin-top:0;margin-bottom:5px}.bs-callout p:last-child{margin-bottom:0}.bs-callout code{background-color:#fff;border-radius:3px}.bs-callout-danger{background-color:#fdf7f7;border-color:#d9534f}.bs-callout-danger h4{color:#d9534f}.bs-callout-warning{background-color:#fcf8f2;border-color:#f0ad4e}.bs-callout-warning h4{color:#f0ad4e}.bs-callout-info{background-color:#f4f8fa;border-color:#5bc0de}.bs-callout-info h4{color:#5bc0de}
+
+@media (max-width: 768px) {
+  .small-flag { width: 30px; height: 30px; }
 }
 
 .progress span {
@@ -100,4 +213,4 @@ hr {
   width: 100%;
   color: #000;
   font-weight: bold;
- }
+}

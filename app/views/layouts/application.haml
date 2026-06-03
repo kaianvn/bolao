@@ -43,7 +43,7 @@
           %ul.nav.navbar-nav.navbar-right
             %li
               %a{href: "#"}
-                %img.img-circle{src: current_user.image, width: 25}
+                %img.img-circle{src: profile_image_for(current_user), width: 25}
                 = "&nbsp;".html_safe + current_user.name
             %li
               %a{href: "#"}
@@ -113,6 +113,23 @@
                       %td.center
                         %img.img-circle.tooltip-img{src: match.team_b.flag, width: 30, "data-toggle" => "tooltip", "data-placement" => "top", title: match.team_b.name}
               %a.btn.btn-default{href: my_guesses_path}= t("take_a_guess")
+
+          .box-rounded
+            %h4
+              %span.glyphicon.glyphicon-forward
+              = t("upcoming_matches")
+            - if @upcoming_matches.blank?
+              %table.table
+                %tr
+                  %td= t("no_upcoming_matches")
+            - else
+              %table.table
+                %tbody
+                  - @upcoming_matches.each do |match|
+                    %tr
+                      %td= match.data_hora
+                      %td= match.section_label
+                      %td= "#{match.team_a.try(:name) || t('guesses_page.to_be_defined')} x #{match.team_b.try(:name) || t('guesses_page.to_be_defined')}"
       %footer
         %p= "&copy; ".html_safe + t("app_title")
 

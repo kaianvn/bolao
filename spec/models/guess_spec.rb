@@ -90,5 +90,17 @@ describe Guess do
       guess = create(:guess, goals_a: 1, goals_b: 3, match: build(:past_match, goals_a: 1, goals_b: 3))
       guess.score.should == 3
     end
+
+    it 'should include the advancing team for knockout guesses' do
+      team_a = create(:team, name: 'Team A')
+      team_b = create(:team, name: 'Team B')
+      guess = create(:guess,
+                     match: build(:knockout_match, team_a: team_a, team_b: team_b),
+                     goals_a: 1,
+                     goals_b: 1,
+                     advancing_team: team_a)
+
+      guess.to_s.should == '1 x 1 - Team A'
+    end
   end
 end

@@ -1,14 +1,16 @@
 = \Bolão
 {<img src="https://travis-ci.org/josuelima/bolao.svg" alt="Build Status" />}[https://travis-ci.org/josuelima/bolao] {<img src="https://codeclimate.com/github/josuelima/bolao.png" />}[https://codeclimate.com/github/josuelima/bolao] {<img src="https://codeclimate.com/github/josuelima/bolao/coverage.png" />}[https://codeclimate.com/github/josuelima/bolao]
 
-Bolão is a traditional Guess Game where the users post their guesses for matches and then score points acoording to the matches results.
-Groups of friends usually make a Bolão during World Cups or Football leagues.
+Bolão is a traditional guess game where users post their guesses for matches and then score points according to the results.
+Groups of friends usually make a Bolão during World Cups or football leagues.
 
 This Bolão app is flexible and you can customize it to whatever sport or competition you want as long as 
-it has Versus matches (like football, basketbal, volleyball and so on).
+it has versus matches (like football, basketball, volleyball and so on).
+
+The current 2026 setup refreshes teams, logos, and fixtures for the World Cup cycle. Group-stage matches are seeded in the database and knockout matches now support a per-user advancement choice, so each player can build a full bracket from their own guesses.
 
 Each guess must be saved before the match starts. When a match starts it's not possible to update or save a guess for
-it anymore. When the match is over the Bolão admin will update it with the match result, which will generate scores based on the users guesses. A Rank will be shown in the main page according to the users scores. 
+it anymore. When the match is over the Bolão admin will update it with the match result, which will generate scores based on the users guesses. A rank will be shown in the main page according to the users scores.
 
 {<img src="https://raw.githubusercontent.com/josuelima/bolao/master/app/assets/images/1-dashboard.png" alt="User Dashboard" width="150" />}[https://raw.githubusercontent.com/josuelima/bolao/master/app/assets/images/1-dashboard.png]
 {<img src="https://raw.githubusercontent.com/josuelima/bolao/master/app/assets/images/2-match.png" alt="Match Page" width="150" />}[https://raw.githubusercontent.com/josuelima/bolao/master/app/assets/images/2-match.png]
@@ -23,10 +25,12 @@ You can see an example running on: {www.fuleir.us}[http://www.fuleir.us]
 
 This app is built on Rails 4 using {RailsAdmin}[https://github.com/sferik/rails_admin] as dashboard.
 
-Each match should belong to a Group (like in world cup: Group A, Group B, Final...) and it's better and easier 
-to use seeds in order to fill your bolao initial matches in case you have manny (see an exemple at db/seeds.rb)
+Each match belongs to a stage. Group-stage fixtures use a Group, while knockout fixtures use phase and round fields.
+The guess form shows both the regular score and, for knockout matches, the team that advances when there is a draw.
 
-Actually I'm using UOL CDN to retrieve the teams images. You can either customize it according to the tournament or league your Bolao is running, or use your custom images.
+It is easier to use seeds to fill the initial matches when you have many of them. See `db/seeds.rb` for the current 2026 data set.
+
+The app now persists team logos in the database. Existing records still fall back to the old image source if needed.
 
 I18n is done (en and pt-BR)
 
@@ -34,10 +38,24 @@ Draper was used to decorate models and controllers, however I think it leaves a 
 
 == Configs
 
-There is no special configs to do. You will just need to add an user admin (admin=true) to manage the bolao through
-Rails Admin.
+There is no special setup beyond adding an admin user (`admin=true`) to manage the bolao through Rails Admin.
 
-If you already have MySQL installed on your machine 'git pull' 'bundle' 'rake db:schema:load' and 'rails s' should be enough to make it run. 
+For local development outside Docker you will need a working Ruby 2.1 environment and a database config file based on `config/database.example.yml`.
+
+Docker support is available for development. Run `docker compose up --build`, then inside the container load the schema and seed data. The entrypoint will copy `config/database.example.yml` to `config/database.yml` and `config/application.example.yml` to `config/application.yml` if they are missing.
+
+Suggested Docker workflow:
+- `docker compose up --build`
+
+On the first start the web container runs migrations and seeds automatically if the database is empty. The sync container waits for that bootstrap marker before starting its periodic result updates.
+
+API variables for Facebook login are loaded from a local `.env` file through Docker Compose. Create `.env` from `.env.example` once, then `docker compose up --build` will reuse it automatically on later runs.
+
+The SQLite database is bind-mounted from the host `db/` directory, so user data survives container restarts and rebuilds.
+
+Users can export their guesses as CSV from the history or profile page.
+
+Results can be synchronized automatically from the public `openfootball/worldcup.json` source for the 2026 tournament. The repository exposes a JSON file with fixtures and final scores and the app includes a periodic sync task that updates match results and knockout advancement data. When running in Docker, start the `results_sync` service together with the web app to keep the database refreshed without manual input.
 
 If you want to make it possible to sign in with facebook, then you will need to create your own app on facebook (it's pretty easy and fast) and set the following environment variables:
 - APP_BOLAO_FACEBOOK_ID

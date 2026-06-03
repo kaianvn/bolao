@@ -1,0 +1,38 @@
+services:
+  web:
+    build: .
+    command: bundle exec rails s -b 0.0.0.0 -p 3000
+    env_file:
+      - .env
+    environment:
+      APP_ROLE: web
+      RAILS_ENV: development
+      BUNDLE_PATH: /bundle
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - ./db:/app/db
+      - app_tmp:/app/tmp
+      - bundle:/bundle
+
+  results_sync:
+    build: .
+    command: sh -c "while true; do bundle exec rake bolao:sync_worldcup_results || echo 'sync failed'; sleep 21600; done"
+    env_file:
+      - .env
+    environment:
+      APP_ROLE: sync
+      RAILS_ENV: development
+      BUNDLE_PATH: /bundle
+    volumes:
+      - .:/app
+      - ./db:/app/db
+      - app_tmp:/app/tmp
+      - bundle:/bundle
+    depends_on:
+      - web
+
+volumes:
+  app_tmp:
+  bundle:

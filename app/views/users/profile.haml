@@ -10,4 +10,7 @@
 
 .box-rounded
   %h2= t("guesses")
+  - if current_user.present? && current_user.id == @profile.id
+    %p
+      %a.btn.btn-default.btn-xs{href: export_my_guesses_path}= t("users_page.export_guesses")
   = render partial: "guesses_table", locals: {guesses: @profile.public_guesses}

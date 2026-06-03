@@ -9,8 +9,8 @@ en:
   my_guesses: "My Guesses"
   history: "History"
   rules: "Rules"
-  app_title: "Bolao Game"
-  page_title: "Bolao Game"
+  app_title: "Bolao do BSI"
+  page_title: "Bolao do BSI"
   take_a_guess: "Take a Guess"
   logout: "Logout"
   ranking: "Ranking"
@@ -25,7 +25,26 @@ en:
   # guesses
   guesses_page:
     save_guesses: "Save Guesses"
+    save_and_advance: "Save and continue to knockout"
+    groups_tab: "Group Stage"
+    knockout_tab: "Knockout"
+    reset_all: "Delete everything and start over"
+    reset_all_confirm: "Are you sure you want to delete all your guesses and start over?"
     future_matches: "Future Matches"
+    group_stage: "Group Stage"
+    group_label: "Group"
+    live_table_title: "Live standings"
+    table_team: "Team"
+    table_points: "Pts"
+    table_goal_diff: "GD"
+    table_goals_for: "GF"
+    knockout_stage: "Knockout Stage"
+    who_advances: "Who advances?"
+    auto_bracket_preview: "Automatic knockout preview"
+    auto_bracket_help: "This preview is generated from the user's group-stage guesses."
+    round_of_32: "Round of 32"
+    qualifiers: "Qualifiers"
+    to_be_defined: "To be defined"
     last_minutes: "Today Match! Last moments to save your guess for this match!"
     guesses_saved: "Guesses Saved!"
 
@@ -33,15 +52,25 @@ en:
   history_page:
     my_history: "My History"
 
+  users_page:
+    export_guesses: "Export guesses"
+
   # matches
   matches_page:
     not_started: "Match not started yet! Come back soon to see other users guesses!"
 
   sessions:
-    or: "or"
-    sign_in_with_facebook: "Sign in with Facebook"
     create_account: "Creat Account"
     back: "Back"
+
+  upcoming_matches: "Upcoming matches"
+  no_upcoming_matches: "No upcoming matches right now"
+
+  guess_prob:
+    legend: "Legend"
+    home: "Home"
+    draw: "Draw"
+    away: "Away"
 
   rules_page:
     guesses: >

@@ -10,16 +10,15 @@ gem 'sass-rails', '~> 4.0.2'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'haml'
-gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails', branch: 'bootstrap3'
+gem 'twitter-bootstrap-rails', git: 'https://github.com/seyhunak/twitter-bootstrap-rails.git', branch: 'bootstrap3'
 gem 'gravatar-ultimate'
 gem 'draper'
 gem 'rails_admin'
-gem 'i18n', github: 'svenfuchs/i18n'
+gem 'i18n', git: 'https://github.com/svenfuchs/i18n.git'
 gem 'figaro'
 
 # authentication
 gem 'devise'
-gem 'omniauth-facebook'
 
 gem 'puma'
 gem 'mysql2', group: [:production, :test]
@@ -32,4 +31,4 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-ruby '2.1.2'
+ruby '2.1.10'

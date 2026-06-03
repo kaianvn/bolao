@@ -2,29 +2,133 @@
   %h2
     = t("my_guesses")
     %small= "| #{t("guesses_page.future_matches")}"
+  .right
+    = link_to t("guesses_page.reset_all"), reset_my_guesses_path, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: t("guesses_page.reset_all_confirm") }
+
+  %ul.nav.nav-tabs.guess-stage-tabs
+    %li{class: (@step == 'groups' ? 'active' : '')}
+      %a{href: my_guesses_path(step: 'groups')}= t("guesses_page.groups_tab")
+    %li{class: (@step == 'knockout' ? 'active' : '') + (@group_stage_saved ? '' : ' disabled')}
+      - if @group_stage_saved
+        %a{href: my_guesses_path(step: 'knockout', knockout_round: @selected_round)}= t("guesses_page.knockout_tab")
+      - else
+        %a{href: '#', tabindex: '-1'}= t("guesses_page.knockout_tab")
+
   = form_tag my_guesses_form_path do
+    = hidden_field_tag :step, @step
+    = hidden_field_tag :knockout_round, @selected_round
+    %div.alert.alert-danger.hide#knockout-missing-advance-alert
     = render 'submit_right'
-    %table.table
-      - @grouped_matches.each do |group, matches|
+
+    - if @step != 'knockout' && @grouped_matches.any?
+      %h3= t("guesses_page.group_stage")
+      .js-group-stage
+        - @grouped_matches.each do |group, matches|
+          .row
+            .col-md-8
+              %h4= "#{t('guesses_page.group_label')} #{group.name}"
+              %table.table
+                - matches.each do |match|
+                  = hidden_field_tag "guesses[][id]", match.my_guess.try(:id)
+                  = hidden_field_tag "guesses[][match_id]", match.id
+                  %tr.js-group-match{class: (match.is_today? ? "info" : ""), "data-group" => group.name, "data-team-a-id" => match.team_a.id, "data-team-a-name" => match.team_a.name, "data-team-b-id" => match.team_b.id, "data-team-b-name" => match.team_b.name}
+                    %td.hidden-xs= match.data_hora
+                    %td.hidden-xs{align: "right"}= match.team_a.name
+                    %td.center
+                      %img.img-circle.tooltip-img{src: team_flag_for(match.team_a), width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: match.team_a.name}
+                    %td.col-sm-1
+                      %input.form-control.js-goals-a{type: "text", name: 'guesses[][goals_a]', value: match.my_guess.try(:goals_a)}
+                    %td.center= "x"
+                    %td.col-sm-1
+                      %input.form-control.js-goals-b{type: "text", name: 'guesses[][goals_b]', value: match.my_guess.try(:goals_b)}
+                    %td
+                      %img.img-circle.tooltip-img{src: team_flag_for(match.team_b), width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: match.team_b.name}
+                    %td.hidden-xs= match.team_b.name
+                    %td
+                      - if match.is_today?
+                        %span.glyphicon.glyphicon-time.tooltip-img{"data-toggle" => "tooltip", "data-placement" => "left", title: t("guesses_page.last_minutes")}
+            .col-md-4
+              %h4= t("guesses_page.live_table_title")
+              %table.table.table-condensed.table-bordered
+                %thead
+                  %tr
+                    %th= t("guesses_page.table_team")
+                    %th.center= t("guesses_page.table_points")
+                    %th.center= t("guesses_page.table_goal_diff")
+                    %th.center= t("guesses_page.table_goals_for")
+                %tbody.js-standings-body{"data-group" => group.name}
+
+      .row
+        .col-md-12.right
+          %button.btn.btn-primary.btn-lg{type: "submit", name: "advance_to_knockout", value: "1"}
+            = t("guesses_page.save_and_advance")
+
+    - if @step != 'knockout' && @bracket_preview.present? && @bracket_preview[:pairs].any?
+      %h3= t("guesses_page.auto_bracket_preview")
+      %p.text-muted= t("guesses_page.auto_bracket_help")
+      %table.table.table-condensed
         %thead
-          %th{colspan: 42}= group.name
-        - matches.each do |match|
+          %th= t("guesses_page.round_of_32")
+          %th= t("guesses_page.qualifiers")
+        - @bracket_preview[:pairs].each do |pair|
+          %tr
+            %td= "#{pair.first[:team].name} x #{pair.last[:team].name}"
+            %td= "#{pair.first[:group_name]} / #{pair.last[:group_name]}"
+
+    - if @step == 'knockout' && @knockout_matches.any?
+      %h3= t("guesses_page.knockout_stage")
+      - if @knockout_rounds.present? && @knockout_rounds.size > 1
+        .btn-group.margin-bottom
+          - @knockout_rounds.each do |r|
+            - active = (r == @selected_round)
+            %a.btn{href: my_guesses_path(step: 'knockout', knockout_round: r), class: (active ? 'btn-primary' : 'btn-default')}= r.humanize
+      %table.table
+        %thead
+          %th.hidden-xs= t("match")
+          %th.hidden-xs{colspan: 2}= t("guess")
+          %th.hidden-xs= t("guesses_page.who_advances")
+        - @knockout_preview.each do |slot|
+          - match = slot[:match]
+          - team_a = slot[:team_a]
+          - team_b = slot[:team_b]
+          - advancing_team_id = match.my_guess.try(:advancing_team_id)
           = hidden_field_tag "guesses[][id]", match.my_guess.try(:id)
           = hidden_field_tag "guesses[][match_id]", match.id
-          %tr{class: (match.is_today? ? "info" : "")}
+          %tr.js-knockout-match{class: (match.is_today? ? "info" : ""), "data-team-a-id" => team_a.try(:id), "data-team-b-id" => team_b.try(:id), "data-team-a-name" => team_a.try(:name), "data-team-b-name" => team_b.try(:name)}
             %td.hidden-xs= match.data_hora
-            %td.hidden-xs{align: "right"}= match.team_a.name
+            %td.hidden-xs{align: "right"}= team_a.try(:name) || t("guesses_page.to_be_defined")
             %td.center
-              %img.img-circle.tooltip-img{src: match.team_a.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: match.team_a.name}
+              - if team_a.present?
+                %img.tooltip-img{src: team_flag_for(team_a), width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_a.name}
             %td.col-sm-1
-              %input{type: "text", class: "form-control", name: 'guesses[][goals_a]', value: match.my_guess.try(:goals_a)}
+              %input.js-goals-a{type: "text", class: "form-control", name: 'guesses[][goals_a]', value: match.my_guess.try(:goals_a)}
             %td.center= "x"
             %td.col-sm-1
-              %input{type: "text", class: "form-control", name: 'guesses[][goals_b]', value: match.my_guess.try(:goals_b)}
+              %input.js-goals-b{type: "text", class: "form-control", name: 'guesses[][goals_b]', value: match.my_guess.try(:goals_b)}
             %td
-              %img.img-circle.tooltip-img{src: match.team_b.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: match.team_b.name}
-            %td.hidden-xs= match.team_b.name
+              - if team_b.present?
+                %img.tooltip-img{src: team_flag_for(team_b), width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_b.name}
+            %td.hidden-xs= team_b.try(:name) || t("guesses_page.to_be_defined")
+            %td.col-sm-3
+              %select.form-control.js-advancing{name: 'guesses[][advancing_team_id]'}
+                %option{value: ""}= t("guesses_page.who_advances")
+                - if team_a.present?
+                  %option{value: team_a.id, selected: advancing_team_id.to_s == team_a.id.to_s}= team_a.name
+                - if team_b.present?
+                  %option{value: team_b.id, selected: advancing_team_id.to_s == team_b.id.to_s}= team_b.name
             %td
               - if match.is_today?
                 %span.glyphicon.glyphicon-time.tooltip-img{"data-toggle" => "tooltip", "data-placement" => "left", title: t("guesses_page.last_minutes")}
+
+      .row
+        .col-md-12.right
+          - next_round_index = @knockout_rounds.index(@selected_round) || 0
+          - next_round = @knockout_rounds[next_round_index + 1]
+          - if next_round.present?
+            %button.btn.btn-primary.btn-lg{type: "submit", name: "advance_to_knockout", value: "1"}
+              = "Salvar e ir para #{next_round.humanize}"
+          - else
+            %button.btn.btn-primary.btn-lg{type: "submit"}
+              = t("guesses_page.save_guesses")
+
     = render 'submit_right'

@@ -17,19 +17,20 @@
 //= require turbolinks
 //= require_tree .
 
-$('.tooltip-img').tooltip();
+$(document).on('ready page:load', function() {
+  $('.tooltip-img').tooltip();
 
-$('.expand_rank').click(function(e) {
-  target = $('.hidden_rank')
-  
-  if(target.hasClass("hide")) {
-  	target.removeClass("hide");
-  	$('#expand').removeClass('glyphicon-chevron-down');
-  	$('#expand').addClass('glyphicon-chevron-up');
-  } 
-  else {
-  	target.addClass("hide");
-  	$('#expand').removeClass('glyphicon-chevron-up');
-  	$('#expand').addClass('glyphicon-chevron-down');
-  }
-})
+  $('.expand_rank').off('click').on('click', function() {
+    var target = $('.hidden_rank');
+
+    if (target.hasClass('hide')) {
+	target.removeClass('hide');
+	$('#expand').removeClass('glyphicon-chevron-down');
+	$('#expand').addClass('glyphicon-chevron-up');
+    } else {
+	target.addClass('hide');
+	$('#expand').removeClass('glyphicon-chevron-up');
+	$('#expand').addClass('glyphicon-chevron-down');
+    }
+  });
+});

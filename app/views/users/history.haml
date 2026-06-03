@@ -1,3 +1,5 @@
 .box-rounded
   %h2= t("history_page.my_history")
+  %p
+    %a.btn.btn-default.btn-xs{href: export_my_guesses_path}= t("users_page.export_guesses")
   = render partial: "guesses_table", locals: {guesses: @history.public_guesses}

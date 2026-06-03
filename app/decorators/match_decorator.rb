@@ -26,7 +26,10 @@ class MatchDecorator < Draper::Decorator
   end
 
   def my_guess
-    Guess.find_by_match_id_and_user_id(self.id, context[:user].id)
+    user = context[:user]
+    return nil if user.blank?
+
+    guesses.detect { |guess| guess.user_id == user.id }
   end
 
   def status_classes

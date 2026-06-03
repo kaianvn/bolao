@@ -12,17 +12,37 @@
             .box-rounded
               .row
                 .col-md-12.center
-                  = match.team_a.name
-                  %img.img-circle{src: match.team_a.flag, width: 30, hspace: 5}
+                  %span.match-team-name= match.team_a.try(:name) || t("guesses_page.to_be_defined")
+                  - if match.team_a.present?
+                    %img.img-circle{src: match.team_a.flag, width: 30, hspace: 5}
                   %span.h4
                   = "#{match.goals_a} X #{match.goals_b}"
                   %span.h4 
-                  %img.img-circle{src: match.team_b.flag, width: 30, hspace: 5}
-                  = match.team_b.name
+                  - if match.team_b.present?
+                    %img.img-circle{src: match.team_b.flag, width: 30, hspace: 5}
+                  %span.match-team-name= match.team_b.try(:name) || t("guesses_page.to_be_defined")
                   .row{style: 'margin-top: 15px;'}
                     %small
                       %span.glyphicon.glyphicon-time
                       = match.data_hora
+                  - stats = guess_stats_for(match)
+                  .row{style: 'margin-top: 12px;'}
+                    .col-md-12
+                      %small.text-muted= "#{stats[:total]} palpites"
+                      .progress{style: 'margin-top: 8px; height: 26px;'}
+                        .progress-bar{style: "width: #{stats[:home_pct]}%; #{team_legend_style(match.team_a)}"}= "#{stats[:home_pct]}%"
+                        .progress-bar.progress-bar-warning{style: "width: #{stats[:draw_pct]}%; background-color: #ffffff; color: #000;"}= "#{stats[:draw_pct]}% empate"
+                        .progress-bar{style: "width: #{stats[:away_pct]}%; #{team_legend_style(match.team_b)}"}= "#{stats[:away_pct]}%"
+                      .row{style: 'margin-top: 8px;'}
+                        .col-xs-4.small
+                          %span.legend-pill{style: team_legend_style(match.team_a)}= team_country_code(match.team_a)
+                          = t("guess_prob.home")
+                        .col-xs-4.small
+                          %span.legend-pill.legend-draw= "X"
+                          = t("guess_prob.draw")
+                        .col-xs-4.small
+                          %span.legend-pill{style: team_legend_style(match.team_b)}= team_country_code(match.team_b)
+                          = t("guess_prob.away")
                   %hr
               .row
                 .col-md-9
@@ -37,3 +57,43 @@
                 .col-md-3.right
                   %a.btn.btn-default.btn-xs{href: match_details_path(match)}
                     = "#{t("details")} &raquo;".html_safe
+
+- if @knockout_matches.any?
+  .box-rounded
+    %h2= t("guesses_page.knockout_stage")
+    .row
+      - @knockout_matches.each do |match|
+        .col-md-6
+          .box-rounded
+            .row
+              .col-md-12.center
+                %span.match-team-name= match.team_a.try(:name) || t("guesses_page.to_be_defined")
+                - if match.team_a.present?
+                  %img.img-circle{src: match.team_a.flag, width: 30, hspace: 5}
+                %span.h4
+                = "#{match.goals_a} X #{match.goals_b}"
+                %span.h4
+                - if match.team_b.present?
+                  %img.img-circle{src: match.team_b.flag, width: 30, hspace: 5}
+                %span.match-team-name= match.team_b.try(:name) || t("guesses_page.to_be_defined")
+                .row{style: 'margin-top: 15px;'}
+                  %small
+                    %span.glyphicon.glyphicon-time
+                    = match.data_hora
+                    - if match.round.present?
+                      %br/
+                      = match.round.humanize
+                %hr
+            .row
+              .col-md-9
+                %small
+                  = t("guesses") + ":"
+                  %span{class: match.status_classes}= match.open_to_guesses_label
+                  - unless match.my_guess.nil?
+                    = "&nbsp;".html_safe
+                    - match.scorers_limited.each do |guess|
+                      %a{href: match_details_path(match)}
+                        %img.img-circle.tooltip-img{src: guess.user.profile_image, width: 20, title: guess.user.name, "data-toggle" => "tooltip", "data-placement" => "top"}
+              .col-md-3.right
+                %a.btn.btn-default.btn-xs{href: match_details_path(match)}
+                  = "#{t("details")} &raquo;".html_safe

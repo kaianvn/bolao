@@ -1,14 +1,16 @@
 .box-rounded.center
   %h1
-    = @match.team_a.name
+    %span.match-team-name= @match.team_a.try(:name) || t("guesses_page.to_be_defined")
     %br.visible-xs
-    %img.img-circle.small-flag{src: @match.team_a.flag} 
+    - if @match.team_a.present?
+      %img.small-flag{src: @match.team_a.flag}
     = @match.goals_a
     = "X"
     = @match.goals_b
-    %img.img-circle.small-flag{src: @match.team_b.flag}
+    - if @match.team_b.present?
+      %img.small-flag{src: @match.team_b.flag}
     %br.visible-xs
-    = @match.team_b.name
+    %span.match-team-name= @match.team_b.try(:name) || t("guesses_page.to_be_defined")
 
   %br
   .row
@@ -56,3 +58,17 @@
             - if guess.score > 0
               %span{class: guess.score_classes}
                 = "+#{guess.score}"
+
+  - if @match.team_a.present? || @match.team_b.present?
+    .box-rounded
+      %h4= t("guess_prob.legend")
+      .row
+        .col-xs-4.small
+          %span.legend-pill{style: team_legend_style(@match.team_a)}= team_country_code(@match.team_a)
+          = t("guess_prob.home")
+        .col-xs-4.small
+          %span.legend-pill.legend-draw= "X"
+          = t("guess_prob.draw")
+        .col-xs-4.small
+          %span.legend-pill{style: team_legend_style(@match.team_b)}= team_country_code(@match.team_b)
+          = t("guess_prob.away")

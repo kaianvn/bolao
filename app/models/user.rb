@@ -1,8 +1,20 @@
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :rememberable,
-         :validatable, :omniauthable, omniauth_providers: [:facebook]
+         :validatable
 
   validates :name, presence: true
+
+  # allow login via username (`name`) or email
+  attr_accessor :login
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if (login = conditions.delete(:login))
+      where(conditions).where(["lower(name) = :value OR lower(email) = :value", { value: login.downcase }]).first
+    else
+      where(conditions).first
+    end
+  end
 
   has_many :guesses
 
@@ -12,16 +24,5 @@ class User < ActiveRecord::Base
 
   # put the users with no points (null = new user) to the end of the list
   scope :rank, -> { order('position IS NULL, position ASC') }
-
-  def self.find_for_facebook_oauth(auth)
-    where(auth.slice(:provider, :uid)).first_or_create do |user|
-      user.provider = auth.provider
-      user.id = auth.id
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0,20]
-      user.name = auth.info.name
-      user.image = auth.info.image
-    end
-  end
 
 end

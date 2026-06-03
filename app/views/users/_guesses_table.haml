@@ -21,31 +21,35 @@
       %th.hidden-xs.center= t("score")
 
     - guesses.each do |guess|
+      - team_a = guess.match.team_a
+      - team_b = guess.match.team_b
       %tr
         // short details for mobile
         %td.visible-xs.center 
-          %img.img-circle.tooltip-img{src: guess.match.team_a.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: guess.match.team_a.name}
+          - if team_a.present?
+            %img.img-circle.tooltip-img{src: team_a.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_a.name}
         %td.visible-xs.center= "#{guess.match.goals_a} x #{guess.match.goals_b}"
         %td.visible-xs.center
-          %img.img-circle.tooltip-img{src: guess.match.team_b.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: guess.match.team_b.name}
+          - if team_b.present?
+            %img.img-circle.tooltip-img{src: team_b.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_b.name}
 
         // full details for other devices
         %td.hidden-xs.col-md-2.center
-          %a.tooltip-img{href: match_details_path(guess.match), "data-toggle" => "tooltip", "data-placement" => "right", title: guess.match.group.name}= "#{guess.match.data_hora}"
-        %td.right.hidden-xs= guess.match.team_a.name      
+          %a.tooltip-img{href: match_details_path(guess.match), "data-toggle" => "tooltip", "data-placement" => "right", title: guess.match.section_label}= "#{guess.match.data_hora}"
+        %td.right.hidden-xs= team_a.try(:name) || t("guesses_page.to_be_defined")      
         %td.center.hidden-xs
-          %img.img-circle.tooltip-img{src: guess.match.team_a.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: guess.match.team_a.name}
+          - if team_a.present?
+            %img.img-circle.tooltip-img{src: team_a.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_a.name}
         %td.col-sm-1.center.hidden-xs= guess.match.goals_a
         %td.center.hidden-xs x
         %td.col-sm-1.center.hidden-xs= guess.match.goals_b
         %td.center.hidden-xs
-          %img.img-circle.tooltip-img{src: guess.match.team_b.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: guess.match.team_b.name}
-        %td.hidden-xs= guess.match.team_b.name
+          - if team_b.present?
+            %img.img-circle.tooltip-img{src: team_b.flag, width: 20, "data-toggle" => "tooltip", "data-placement" => "top", title: team_b.name}
+        %td.hidden-xs= team_b.try(:name) || t("guesses_page.to_be_defined")
 
         // same for both
-        %td.info.center= guess.goals_a
-        %td.info.center x
-        %td.info.center= guess.goals_b
+        %td.info.center{colspan: 3}= guess.to_s
         %td.center
           - if guess.score > 0
             %span{class: guess.score_classes}= "+#{guess.score}"

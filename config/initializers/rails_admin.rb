@@ -57,19 +57,23 @@ RailsAdmin.config do |config|
     end    
     field :datetime do
       sort_reverse false
-      # First order by active groups, then by match date
-      sortable "groups.active DESC, datetime"
+      # First order by phase, then active groups, then by match date
+      sortable "phase ASC, groups.active DESC, datetime"
     end
+    field :phase
+    field :round
     field :group
     field :team_a
     field :goals_a
     field :team_b
     field :goals_b
+    field :advancing_team
   end
 
   config.model 'Team' do
     field :id
     field :name
+    field :logo_url
   end
 
   config.model 'Group' do

@@ -5,11 +5,13 @@ class Guess < ActiveRecord::Base
   validates :match,   presence: true
   validates :goals_a, presence: true
   validates :goals_b, presence: true
+  validates :advancing_team, presence: true, if: :requires_advancing_team?
 
   validates :match, uniqueness: { scope: :user }
 
   belongs_to :user
   belongs_to :match
+  belongs_to :advancing_team, class_name: 'Team', primary_key: :id, foreign_key: :advancing_team_id
 
   scope :finished, -> { joins(:match).where("matches.datetime < ?", Time.now) }
 
@@ -21,6 +23,13 @@ class Guess < ActiveRecord::Base
   end
 
   def to_s
-    "#{goals_a} x #{goals_b}"
+    base = "#{goals_a} x #{goals_b}"
+    advancing_team.present? ? "#{base} - #{advancing_team.name}" : base
+  end
+
+  private
+
+  def requires_advancing_team?
+    match.present? && match.knockout? && goals_a.present? && goals_b.present? && goals_a.to_i == goals_b.to_i
   end
 end

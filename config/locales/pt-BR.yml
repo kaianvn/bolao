@@ -24,8 +24,8 @@
   my_guesses: "Meus Palpites"
   history: "Histórico"
   rules: "Regras"
-  app_title: "Bolão Calçada"
-  page_title: "Bolão Calçada"
+  app_title: "Bolão do BSI"
+  page_title: "Bolão do BSI"
   take_a_guess: "Dar Palpite"
   logout: "Sair"
   ranking: "Classificação"
@@ -40,7 +40,26 @@
   # guesses
   guesses_page:
     save_guesses: "Salvar Palpites"
+    save_and_advance: "Salvar e avançar para o mata-mata"
+    groups_tab: "Fase de Grupos"
+    knockout_tab: "Mata-mata"
+    reset_all: "Apagar tudo e recomeçar"
+    reset_all_confirm: "Tem certeza que deseja apagar todos os seus palpites e recomeçar?"
     future_matches: "Jogos Futuros"
+    group_stage: "Fase de Grupos"
+    group_label: "Grupo"
+    live_table_title: "Classificação em tempo real"
+    table_team: "Seleção"
+    table_points: "Pts"
+    table_goal_diff: "SG"
+    table_goals_for: "GP"
+    knockout_stage: "Mata-mata"
+    who_advances: "Quem avanca?"
+    auto_bracket_preview: "Prévia automática do mata-mata"
+    auto_bracket_help: "A prévia é montada a partir dos palpites da fase de grupos do usuário."
+    round_of_32: "Oitavas de final"
+    qualifiers: "Classificados"
+    to_be_defined: "A definir"
     last_minutes: "Jogo Hoje! Últimos momentos para palpitar."
     guesses_saved: "Palpites Salvos!"
 
@@ -48,15 +67,25 @@
   history_page:
     my_history: "Meu Histórico"
 
+  users_page:
+    export_guesses: "Exportar palpites"
+
   # matches
   matches_page:
     not_started: "Jogo ainda não iniciado! Volte em breve para ver as apostas dos outros participantes"
 
   sessions:
-    or: "ou"
-    sign_in_with_facebook: "Entrar com Facebook"
     create_account: "Criar Conta"
     back: "Voltar"
+
+  upcoming_matches: "Próximos jogos"
+  no_upcoming_matches: "Não há próximos jogos por enquanto"
+
+  guess_prob:
+    legend: "Legenda"
+    home: "Time A"
+    draw: "Empate"
+    away: "Time B"
 
   rules_page:
     guesses: >
@@ -97,11 +126,6 @@
         subject: "Instruções para reiniciar sua senha"
       unlock_instructions:
         subject: "Instruções para destravar sua senha"
-    omniauth_callbacks:
-      failure: "Não pudemos autenticá-lo em %{kind} por causa de \"%{reason}\"."
-      success: "Autenticado com sucesso na conta %{kind}."
-      user:
-        success: "Bem vindo de volta"
     sessions:
       user:
         signed_in: "Bem vindo de volta"

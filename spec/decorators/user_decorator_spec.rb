@@ -28,9 +28,14 @@ describe UserDecorator do
     user_decorated.profile_image.should == "http://www.gravatar.com/avatar/7711ce8a674520d03f28668887b55c9c?d=mm"
   end
 
-  it 'should return user image from facebook' do
+  it 'should return user image when present' do
     user = create(:user, image: "profile.jpg").decorate
     user.profile_image.should == "profile.jpg"
+  end
+
+  it 'should use default profile image when email is missing' do
+    user = build(:user, email: nil).decorate
+    user.profile_image.should == ActionController::Base.helpers.asset_path('4-profile.png')
   end
 
 end

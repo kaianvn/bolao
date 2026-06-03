@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506024517) do
+ActiveRecord::Schema.define(version: 20260528020000) do
 
   create_table "groups", force: true do |t|
     t.string   "name"
@@ -20,20 +20,22 @@ ActiveRecord::Schema.define(version: 20140506024517) do
     t.datetime "updated_at"
   end
 
-  add_index "groups", ["active"], name: "index_groups_on_active", using: :btree
+  add_index "groups", ["active"], name: "index_groups_on_active"
 
   create_table "guesses", force: true do |t|
     t.integer  "user_id"
     t.integer  "match_id"
     t.integer  "goals_a"
     t.integer  "goals_b"
+    t.integer  "advancing_team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "guesses", ["id", "user_id"], name: "index_guesses_on_id_and_user_id", using: :btree
-  add_index "guesses", ["match_id"], name: "index_guesses_on_match_id", using: :btree
-  add_index "guesses", ["user_id"], name: "index_guesses_on_user_id", using: :btree
+  add_index "guesses", ["advancing_team_id"], name: "index_guesses_on_advancing_team_id"
+  add_index "guesses", ["id", "user_id"], name: "index_guesses_on_id_and_user_id"
+  add_index "guesses", ["match_id"], name: "index_guesses_on_match_id"
+  add_index "guesses", ["user_id"], name: "index_guesses_on_user_id"
 
   create_table "matches", force: true do |t|
     t.datetime "datetime"
@@ -42,29 +44,34 @@ ActiveRecord::Schema.define(version: 20140506024517) do
     t.integer  "goals_a"
     t.integer  "goals_b"
     t.integer  "group_id"
+    t.integer  "advancing_team_id"
+    t.string   "phase",             default: "group", null: false
+    t.string   "round"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "matches", ["group_id"], name: "index_matches_on_group_id", using: :btree
-  add_index "matches", ["team_a_id"], name: "index_matches_on_team_a_id", using: :btree
-  add_index "matches", ["team_b_id"], name: "index_matches_on_team_b_id", using: :btree
+  add_index "matches", ["advancing_team_id"], name: "index_matches_on_advancing_team_id"
+  add_index "matches", ["group_id"], name: "index_matches_on_group_id"
+  add_index "matches", ["team_a_id"], name: "index_matches_on_team_a_id"
+  add_index "matches", ["team_b_id"], name: "index_matches_on_team_b_id"
 
   create_table "teams", force: true do |t|
     t.string   "name"
     t.string   "slug"
+    t.string   "logo_url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "teams", ["slug"], name: "index_teams_on_slug", using: :btree
+  add_index "teams", ["slug"], name: "index_teams_on_slug"
 
   create_table "users", force: true do |t|
-    t.string   "email",               default: "", null: false
+    t.string   "email",                default: "",    null: false
     t.boolean  "admin"
     t.integer  "position"
-    t.integer  "score",               default: 0
-    t.string   "encrypted_password",  default: "", null: false
+    t.integer  "score",                default: 0
+    t.string   "encrypted_password",   default: "",    null: false
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -72,8 +79,9 @@ ActiveRecord::Schema.define(version: 20140506024517) do
     t.string   "uid"
     t.string   "name"
     t.string   "image"
+    t.boolean  "must_change_password", default: false, null: false
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
 
 end

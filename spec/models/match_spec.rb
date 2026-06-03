@@ -29,6 +29,11 @@ describe Match do
       match.should_not be_valid
     end
 
+    it 'should allow knockout matches without a group' do
+      match = build(:knockout_match)
+      match.should be_valid
+    end
+
   end
 
   context 'scopes' do
